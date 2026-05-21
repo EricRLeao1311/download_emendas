@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Baixador de Emendas Parlamentares</title>
+    <link rel="stylesheet" href="/static/app.css" />
+  </head>
+  <body class="page-body">
+    <div class="app-shell">
+      <header class="topbar glass-card">
+        <div class="brand-block">
+          <span class="brand-kicker">Parquet pronto para analise</span>
+          <h1 id="hero-title"></h1>
+          <p id="hero-subtitle"></p>
+
+          <details class="data-details">
+            <summary>Ver origem dos dados</summary>
+            <div class="data-details__content">
+              <p><strong>Base ativa:</strong> <span id="dataset-label"></span></p>
+              <p><strong>Descricao:</strong> <span id="dataset-description"></span></p>
+              <p><strong>Parquet:</strong> <span id="dataset-parquet"></span></p>
+              <p><strong>CSV de origem:</strong> <span id="dataset-source"></span></p>
+            </div>
+          </details>
+        </div>
+
+        <div class="topbar-side">
+          {% if auth_enabled %}
+          <div class="session-actions">
+            <form action="/logout" method="post">
+              <button class="ghost-button ghost-button--light" type="submit">Sair</button>
+            </form>
+          </div>
+          {% endif %}
+
+          <section class="topbar-panel">
+            <span class="mini-label">Base de dados</span>
+            <div id="dataset-buttons" class="dataset-buttons"></div>
+          </section>
+
+          <section class="topbar-panel">
+            <span class="mini-label">Regras de download</span>
+            <div class="limit-pills">
+              <div class="limit-pill">
+                <span>Max linhas</span>
+                <strong id="limit-rows"></strong>
+              </div>
+              <div class="limit-pill">
+                <span>Max colunas</span>
+                <strong id="limit-columns"></strong>
+              </div>
+              <div class="limit-pill">
+                <span>Previa</span>
+                <strong id="limit-preview"></strong>
+              </div>
+            </div>
+          </section>
+
+          <div id="hero-status" class="status-pill"></div>
+        </div>
+      </header>
+
+      <section class="metrics-strip">
+        <article class="metric-card">
+          <span>Linhas no parquet</span>
+          <strong id="metric-rows"></strong>
+        </article>
+        <article class="metric-card">
+          <span>Colunas disponiveis</span>
+          <strong id="metric-columns"></strong>
+        </article>
+        <article class="metric-card">
+          <span>Colunas escolhidas</span>
+          <strong id="metric-selected-columns"></strong>
+        </article>
+        <article class="metric-card">
+          <span>Encontradas no filtro</span>
+          <strong id="metric-found"></strong>
+        </article>
+        <article class="metric-card">
+          <span>Exportaveis</span>
+          <strong id="metric-export"></strong>
+        </article>
+        <article class="metric-card">
+          <span>Ultima atualizacao</span>
+          <strong id="metric-updated"></strong>
+        </article>
+      </section>
+
+      <section class="glass-card">
+        <div class="panel-head">
+          <div>
+            <span class="eyebrow">Filtros</span>
+            <h2>Filtros rapidos</h2>
+            <p class="panel-text">Clique no filtro, pesquise parte do nome e marque varias opcoes em uma lista compacta.</p>
+          </div>
+          <div class="panel-actions panel-actions--top">
+            <select id="add-filter-select">
+              <option value="">Adicionar filtro</option>
+            </select>
+            <button id="clear-filters" class="ghost-button" type="button">Limpar filtros</button>
+          </div>
+        </div>
+
+        <div id="filters-container" class="filters-grid"></div>
+      </section>
+
+      <section class="glass-card">
+        <div class="panel-head">
+          <div>
+            <span class="eyebrow">Colunas</span>
+            <h2>Escolha as colunas</h2>
+            <p class="panel-text">As colunas escolhidas ficam separadas e podem ser reordenadas arrastando os chips.</p>
+          </div>
+          <div class="panel-actions">
+            <input id="column-search" type="search" placeholder="Filtrar nomes de colunas" />
+            <button id="restore-default-columns" class="ghost-button" type="button">Colunas padrao</button>
+            <button id="clear-columns" class="ghost-button" type="button">Limpar colunas</button>
+          </div>
+        </div>
+
+        <div class="selected-box">
+          <div class="selected-box__head">
+            <strong>Colunas escolhidas</strong>
+            <span id="selected-columns-count"></span>
+          </div>
+          <div class="selected-box__hint">Arraste para mudar a ordem em que as colunas aparecem na tabela e no download.</div>
+          <div id="selected-columns-summary" class="selected-column-list"></div>
+        </div>
+
+        <div id="column-chip-list" class="column-grid"></div>
+      </section>
+
+      <section class="glass-card">
+        <div class="panel-head">
+          <div>
+            <span class="eyebrow">Consulta</span>
+            <h2>Gerar previa e baixar</h2>
+          </div>
+        </div>
+
+        <div class="query-toolbar">
+          <label class="control-field">
+            <span>Ordenar por</span>
+            <select id="sort-select"></select>
+          </label>
+
+          <label class="control-field control-field--inline">
+            <span>Ordem decrescente</span>
+            <input id="sort-desc" type="checkbox" checked />
+          </label>
+
+          <div class="action-row">
+            <button id="preview-button" class="primary-button" type="button">Atualizar agora</button>
+            <button id="download-csv" class="secondary-button" type="button">Baixar CSV</button>
+            <button id="download-xlsx" class="secondary-button" type="button">Baixar Excel</button>
+          </div>
+        </div>
+
+        <div id="warning-box" class="warning-box" hidden></div>
+      </section>
+
+      <section class="glass-card preview-card">
+        <div class="panel-head panel-head--compact">
+          <div>
+            <span class="eyebrow">Previa</span>
+            <h2>Resultado filtrado</h2>
+            <p class="panel-text">A tabela mostra uma janela compacta da consulta. O scroll fica dentro dela.</p>
+          </div>
+        </div>
+
+        <div class="table-shell">
+          <table id="preview-table">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      window.__APP_BOOTSTRAP__ = {{ bootstrap_json | safe }};
+    </script>
+    <script src="/static/app.js"></script>
+  </body>
+</html>

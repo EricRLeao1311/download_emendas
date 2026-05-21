@@ -1,0 +1,199 @@
+[ui]
+title = "Baixador de Emendas Parlamentares"
+subtitle = "Escolha a base, selecione colunas, aplique filtros e baixe a planilha em CSV ou Excel."
+
+[downloads]
+max_rows = 150000
+max_columns = 30
+preview_rows = 250
+max_filter_options = 4000
+
+[engine]
+threads = 4
+
+[auth]
+enabled = true
+cookie_name = "emendas_access_token"
+tokens_path = "config/access_tokens.json"
+
+[datasets.emendas]
+label = "Emendas"
+description = "Base consolidada das emendas parlamentares."
+parquet_path = "data/parquet/emendas.parquet"
+source_csv_path = "C:/Users/Eric/Downloads/Atualizar_emendas/Atualizar_emendas/out/emendasgeral13052026.csv"
+default_sort = "valor_empenhado"
+default_sort_desc = true
+default_columns = [
+  "codigo_emenda",
+  "ano",
+  "tipo_emenda",
+  "nome_autor",
+  "uf",
+  "municipio",
+  "nome_funcao",
+  "nome_subfuncao",
+  "programa_orcamentario",
+  "acao_orcamentaria",
+  "valor_empenhado",
+  "valor_pago",
+]
+featured_filters = [
+  "ano",
+  "tipo_emenda",
+  "nome_autor",
+  "uf",
+  "municipio",
+  "nome_funcao",
+  "nome_subfuncao",
+  "programa_orcamentario",
+  "acao_orcamentaria",
+  "valor_empenhado",
+]
+categorical_filters = [
+  "ano",
+  "tipo_emenda",
+  "uf",
+  "regiao",
+  "nome_funcao",
+  "nome_subfuncao",
+  "programa_orcamentario",
+]
+search_filters = [
+  "codigo_emenda",
+  "nome_autor",
+  "municipio",
+  "local_gasto",
+  "acao_orcamentaria",
+  "plano_orcamentario",
+]
+numeric_filters = [
+  "valor_empenhado",
+  "valor_liquido",
+  "valor_pago",
+  "valor_nao_pago",
+  "valor_rap_inscritos",
+  "valor_rap_cancelados",
+  "valor_rap_pagos",
+]
+integer_columns = [
+  "ano",
+]
+numeric_columns = [
+  "valor_empenhado",
+  "valor_empenhado_per_capita",
+  "valor_liquido",
+  "valor_pago",
+  "valor_nao_pago",
+  "valor_rap_inscritos",
+  "valor_rap_cancelados",
+  "valor_rap_pagos",
+  "valor_empenho_deflacionados",
+  "valor_liquido_deflacionado",
+  "valor_pago_deflacionado",
+  "valor_rap_inscritos_deflacionado",
+  "valor_rap_cancelados_deflacionado",
+  "valor_rap_pagos_deflacionado",
+]
+date_columns = []
+timestamp_columns = [
+  "data_extracao",
+  "data_carga",
+]
+
+[datasets.documentos]
+label = "Documentos"
+description = "Base detalhada dos documentos vinculados às emendas."
+parquet_path = "data/parquet/documentos.parquet"
+source_csv_path = "C:/Users/Eric/Downloads/Atualizar_emendas/Atualizar_emendas/out/emendinhas13052026.csv"
+default_sort = "data_movimento"
+default_sort_desc = true
+default_columns = [
+  "documento",
+  "data_movimento",
+  "fase",
+  "codigo_emenda",
+  "tipo_emenda",
+  "nome_autor",
+  "nome_favorecido",
+  "uf_local_gasto",
+  "municipio_gasto",
+  "nome_funcao",
+  "programa_orcamentario",
+  "acao_orcamentaria",
+  "valor_empenhado",
+  "valor_pago",
+]
+featured_filters = [
+  "ano",
+  "fase",
+  "tipo_emenda",
+  "nome_autor",
+  "uf_local_gasto",
+  "municipio_gasto",
+  "nome_funcao",
+  "programa_orcamentario",
+  "acao_orcamentaria",
+  "data_movimento",
+]
+categorical_filters = [
+  "ano",
+  "fase",
+  "tipo_emenda",
+  "uf_local_gasto",
+  "uf_favorecido",
+  "nome_funcao",
+  "nome_subfuncao",
+  "orgao_superior",
+  "orgao",
+  "unidade_orcamentaria",
+  "grupo_despesa",
+  "modalidade_despesa",
+  "apoiadores",
+]
+search_filters = [
+  "documento",
+  "codigo_emenda",
+  "nome_autor",
+  "nome_favorecido",
+  "municipio_gasto",
+  "municipio_favorecido",
+  "programa_orcamentario",
+  "acao_orcamentaria",
+  "elemento_despesa",
+  "ug",
+]
+numeric_filters = [
+  "valor_empenhado",
+  "valor_pago",
+  "valor_liquido",
+  "valor_nao_pago",
+  "valor_rap_inscritos",
+  "valor_rap_cancelados",
+  "valor_rap_pagos",
+]
+integer_columns = [
+  "ano",
+]
+numeric_columns = [
+  "valor_empenhado",
+  "valor_pago",
+  "valor_empenhado_per_capita",
+  "valor_liquido",
+  "valor_nao_pago",
+  "valor_rap_inscritos",
+  "valor_rap_cancelados",
+  "valor_rap_pagos",
+  "valor_empenho_deflacionados",
+  "valor_liquido_deflacionado",
+  "valor_pago_deflacionado",
+  "valor_rap_inscritos_deflacionado",
+  "valor_rap_cancelados_deflacionado",
+  "valor_rap_pagos_deflacionado",
+]
+date_columns = [
+  "data_movimento",
+]
+timestamp_columns = [
+  "data_extracao",
+  "data_carga",
+]

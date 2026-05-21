@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.DS_Store
+data/tmp/
+tools/cloudflared/
+config/access_tokens.json
+
+data/parquet/*.parquet
+data/parquet/*.json
+data/parquet/*.tmp
+!data/parquet/.gitkeep
